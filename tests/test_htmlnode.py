@@ -4,7 +4,6 @@ from src.htmlnode import HTMLNode, LeafNode, ParentNode
 
 class TestHTMLNode(unittest.TestCase):
 
-    # --- HTMLNode tests ---
     def test_init_defaults(self):
         node = HTMLNode()
         self.assertIsNone(node.tag)
@@ -40,7 +39,9 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(parent.children[0].tag, "span")
         self.assertEqual(parent.children[0].value, "child")
 
-    # --- LeafNode tests ---
+
+class TestLeafNode(unittest.TestCase):
+
     def test_leaf_to_html_p(self):
         node = LeafNode("p", "Hello, world!")
         self.assertEqual(node.to_html(), "<p>Hello, world!</p>")
@@ -57,7 +58,9 @@ class TestHTMLNode(unittest.TestCase):
         with self.assertRaises(ValueError):
             LeafNode("p", None)
 
-    # --- ParentNode tests ---
+
+class TestParentNode(unittest.TestCase):
+
     def test_parentnode_simple(self):
         node = ParentNode("div", [LeafNode("p", "Hello")])
         self.assertEqual(node.to_html(), "<div><p>Hello</p></div>")
@@ -95,4 +98,3 @@ class TestHTMLNode(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-
