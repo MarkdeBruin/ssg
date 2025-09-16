@@ -1,7 +1,7 @@
-from .htmlnode import LeafNode, ParentNode
-from .md_inline import text_to_text_nodes
-from .md_block import markdown_to_blocks, block_to_block_type, BlockType
-from .textnode import text_node_to_html_node, TextNode, TextType
+from src.htmlnode import LeafNode, ParentNode
+from src.md_inline import text_to_text_nodes
+from src.md_block import markdown_to_blocks, block_to_block_type, BlockType
+from src.textnode import text_node_to_html_node, TextNode, TextType
 
 
 def markdown_to_html_node(markdown: str) -> ParentNode:
