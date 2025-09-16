@@ -81,6 +81,10 @@ class TestBlockToBlockType(unittest.TestCase):
     def test_invalid_heading_falls_back_to_paragraph(self):
         block = "####### too many hashes"
         self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
+    
+    def test_malformed_ordered_list_falls_back_to_paragraph(self):
+        block = "1. first\n3. second"
+        self.assertEqual(block_to_block_type(block), BlockType.PARAGRAPH)
         
 
 if __name__ == "__main__":
