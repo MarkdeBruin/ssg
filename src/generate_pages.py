@@ -15,9 +15,11 @@ def generate_page(src: str, template: str, dest: str, basepath: str = "/"):
     html_content = markdown_to_html_node(markdown_content).to_html()
     title = extract_title(markdown_content)
     
-    full_html = template_content.replace("{{ Title }}", title).replace("{{ Content }}", html_content)
-    full_html = template_content.replace('href="/', f'href="{basepath}')
+    full_html = template_content.replace("{{ Title }}", title)
+    full_html = full_html.replace("{{ Content }}", html_content)
+    full_html = full_html.replace('href="/', f'href="{basepath}')
     full_html = full_html.replace('src="/', f'src="{basepath}')
+    
     
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     
