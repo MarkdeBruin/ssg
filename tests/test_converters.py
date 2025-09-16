@@ -1,7 +1,7 @@
 import unittest
 from src.textnode import TextNode, TextType
 from src.htmlnode import LeafNode
-from src.converters import text_to_text_nodes, text_node_to_html_node
+from src.converters import text_to_text_nodes, text_node_to_html_node, markdown_to_blocks
 
 class TestTextToTextNodes(unittest.TestCase):
 
@@ -120,6 +120,56 @@ class TestTextNodeToHTMLNode(unittest.TestCase):
         node = TextNode("Oops", FakeType())
         with self.assertRaises(ValueError):
             text_node_to_html_node(node)
+
+
+class TestMarkdownToBlocks(unittest.TestCase):
+
+    def test_markdown_to_blocks_basic(self):
+        md = """
+This is **bolded** paragraph
+
+This is another paragraph with _italic_ text and `code` here
+This is the same paragraph on a new line
+
+- This is a list
+- with items
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(
+            blocks,
+            [
+                "This is **bolded** paragraph",
+                "This is another paragraph with _italic_ text and `code` here\nThis is the same paragraph on a new line",
+                "- This is a list\n- with items",
+            ],
+        )
+
+    def test_leading_and_trailing_newlines(self):
+        md = """
+
+First block
+
+Second block
+
+"""
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, ["First block", "Second block"])
+
+    def test_multiple_blank_lines(self):
+        md = "First\n\n\n\nSecond"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, ["First", "Second"])
+
+    def test_single_block(self):
+        md = "Just one block of text without separation"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, ["Just one block of text without separation"])
+
+    def test_whitespace_blocks_ignored(self):
+        md = "First\n\n   \n\nSecond"
+        blocks = markdown_to_blocks(md)
+        self.assertEqual(blocks, ["First", "Second"])
+
 
 
 if __name__ == "__main__":

@@ -45,3 +45,8 @@ def text_node_to_html_node(text_node: TextNode) -> LeafNode:
 
         case _:
             raise ValueError(f"Unknown TextType: {text_node.text_type}")
+
+
+def markdown_to_blocks(markdown: str) -> list[str]:
+    blocks = markdown.split("\n\n")
+    return [block.strip() for block in blocks if block.strip()]
