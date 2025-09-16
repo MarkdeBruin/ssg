@@ -1,12 +1,73 @@
 import unittest
 from src.textnode import TextNode, TextType
-from src.nodes_parser import (
+from src.md_inline import (
+    text_to_text_nodes,
     split_nodes_delimiter,
     split_nodes_image,
     split_nodes_link,
     extract_markdown_images,
     extract_markdown_links,
 )
+
+
+class TestTextToTextNodes(unittest.TestCase):
+
+    def test_text_to_text_nodes_complex(self):
+        text = (
+            "This is **bold** with _italic_ and `code` "
+            "and an ![image](https://i.imgur.com/fJRm4Vk.jpeg) "
+            "and a [link](https://boot.dev)"
+        )
+        nodes = text_to_text_nodes(text)
+
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" with ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("code", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ]
+
+        self.assertEqual(len(nodes), len(expected))
+        for node, exp in zip(nodes, expected):
+            self.assertEqual(node.text, exp.text)
+            self.assertEqual(node.text_type, exp.text_type)
+            self.assertEqual(getattr(node, "url", None), getattr(exp, "url", None))
+
+    def test_text_to_text_nodes_only_text(self):
+        text = "Just plain text here."
+        nodes = text_to_text_nodes(text)
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0].text, text)
+        self.assertEqual(nodes[0].text_type, TextType.TEXT)
+
+    def test_text_to_text_nodes_multiple_images_and_links(self):
+        text = (
+            "![img1](url1) then [link1](link1_url) "
+            "and ![img2](url2) with [link2](link2_url)"
+        )
+        nodes = text_to_text_nodes(text)
+
+        expected = [
+            TextNode("img1", TextType.IMAGE, "url1"),
+            TextNode(" then ", TextType.TEXT),
+            TextNode("link1", TextType.LINK, "link1_url"),
+            TextNode(" and ", TextType.TEXT),
+            TextNode("img2", TextType.IMAGE, "url2"),
+            TextNode(" with ", TextType.TEXT),
+            TextNode("link2", TextType.LINK, "link2_url"),
+        ]
+
+        self.assertEqual(len(nodes), len(expected))
+        for node, exp in zip(nodes, expected):
+            self.assertEqual(node.text, exp.text)
+            self.assertEqual(node.text_type, exp.text_type)
+            self.assertEqual(getattr(node, "url", None), getattr(exp, "url", None))
 
 
 class TestSplitNodesDelimiter(unittest.TestCase):
