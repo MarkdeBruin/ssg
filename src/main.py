@@ -11,6 +11,11 @@ TEMPLATE_FILE = "./template.html"
 def main():
     basepath = sys.argv[1] if len(sys.argv) > 1 else "/"
     
+    if not basepath.startswith("/"):
+        basepath = "/" + basepath
+    if not basepath.endswith("/"):
+        basepath += "/"
+    
     if os.path.exists(DIR_PUBLIC):
         shutil.rmtree(DIR_PUBLIC)
     
