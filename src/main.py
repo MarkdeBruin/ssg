@@ -1,24 +1,22 @@
-import os, shutil
+import os
+import shutil
 from src.copy_files import copy_files
-from src.generate_page import generate_page
+from src.generate_pages import generate_pages_recursive
 
 DIR_STATIC = "./static"
 DIR_PUBLIC = "./public"
 DIR_CONTENT = "./content"
 TEMPLATE_FILE = "./template.html"
 
-INDEX_MD = os.path.join(DIR_CONTENT, "index.md")
-INDEX_HTML = os.path.join(DIR_PUBLIC, "index.html")
-
 def main():
     if os.path.exists(DIR_PUBLIC):
         shutil.rmtree(DIR_PUBLIC)
     
-    print("Copying files…")   
+    print("Copying static files…")   
     copy_files(DIR_STATIC, DIR_PUBLIC)
-    print("\n\n") 
     
-    generate_page(INDEX_MD, TEMPLATE_FILE, INDEX_HTML)
+    print("\nGenerating pages…")
+    generate_pages_recursive(DIR_CONTENT, TEMPLATE_FILE, DIR_PUBLIC)
 
 if __name__ == "__main__":
     main()
